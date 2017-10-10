@@ -1,0 +1,57 @@
+2017-10-09 15:23:04,417 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:32] - java.io.FileNotFoundException: Parent directory doesn't exist: /user/Administrator
+	at org.apache.hadoop.hdfs.server.namenode.FSDirectory.verifyParentDir(FSDirectory.java:1752)
+	at org.apache.hadoop.hdfs.server.namenode.FSDirMkdirOp.mkdirs(FSDirMkdirOp.java:75)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.mkdirs(FSNamesystem.java:3896)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.mkdirs(NameNodeRpcServer.java:984)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.mkdirs(ClientNamenodeProtocolServerSideTranslatorPB.java:622)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:616)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:982)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2049)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2045)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1698)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2043)
+
+2017-10-09 15:36:03,136 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:136] - org.apache.hadoop.ipc.RemoteException(org.apache.hadoop.fs.PathIsNotEmptyDirectoryException): `/user/Administrator/soft is non empty': Directory is not empty
+	at org.apache.hadoop.hdfs.server.namenode.FSDirDeleteOp.delete(FSDirDeleteOp.java:85)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.delete(FSNamesystem.java:3714)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.delete(NameNodeRpcServer.java:953)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.delete(ClientNamenodeProtocolServerSideTranslatorPB.java:611)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:616)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:982)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2049)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2045)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1698)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2043)
+
+2017-10-09 15:37:33,447 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:71] - java.io.FileNotFoundException: File /user/Administrator/soft does not exist.
+2017-10-09 15:43:05,000 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:178] - java.io.FileNotFoundException: File does not exist: hdfs://192.168.11.25:9000/user/Administrator/soft
+2017-10-09 16:21:28,285 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:292] - java.io.FileNotFoundException: Path is not a file: /user/Administrator/feizl
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:75)
+	at org.apache.hadoop.hdfs.server.namenode.INodeFile.valueOf(INodeFile.java:61)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocationsInt(FSNamesystem.java:1828)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1799)
+	at org.apache.hadoop.hdfs.server.namenode.FSNamesystem.getBlockLocations(FSNamesystem.java:1712)
+	at org.apache.hadoop.hdfs.server.namenode.NameNodeRpcServer.getBlockLocations(NameNodeRpcServer.java:588)
+	at org.apache.hadoop.hdfs.protocolPB.ClientNamenodeProtocolServerSideTranslatorPB.getBlockLocations(ClientNamenodeProtocolServerSideTranslatorPB.java:365)
+	at org.apache.hadoop.hdfs.protocol.proto.ClientNamenodeProtocolProtos$ClientNamenodeProtocol$2.callBlockingMethod(ClientNamenodeProtocolProtos.java)
+	at org.apache.hadoop.ipc.ProtobufRpcEngine$Server$ProtoBufRpcInvoker.call(ProtobufRpcEngine.java:616)
+	at org.apache.hadoop.ipc.RPC$Server.call(RPC.java:982)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2049)
+	at org.apache.hadoop.ipc.Server$Handler$1.run(Server.java:2045)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at javax.security.auth.Subject.doAs(Subject.java:422)
+	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1698)
+	at org.apache.hadoop.ipc.Server$Handler.run(Server.java:2043)
+
+2017-10-09 17:33:20,466 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:362] - java.io.FileNotFoundException: File sequence does not exist
+2017-10-09 17:34:47,130 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:362] - java.io.FileNotFoundException: File sequence does not exist
+2017-10-09 17:35:06,863 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:362] - java.io.FileNotFoundException: File /user/Administrator/sequence does not exist
+2017-10-09 17:41:34,580 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:363] - java.io.EOFException
+2017-10-09 17:42:10,626 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:363] - java.io.EOFException
+2017-10-09 17:43:36,163 ERROR[com.lovecws.mumu.hdfs.basic.HDFSBasicOperation:363] - java.io.EOFException
