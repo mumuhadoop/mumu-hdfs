@@ -318,7 +318,11 @@ public class HDFSBasicOperation {
         Text text = new Text();
         try {
             //writer = SequenceFile.createWriter(distributedFileSystem, new Configuration(), new Path(path), intWritable.getClass(), text.getClass());
-            writer = SequenceFile.createWriter(new Configuration(), SequenceFile.Writer.file(new Path(path)), SequenceFile.Writer.compression(SequenceFile.CompressionType.RECORD), SequenceFile.Writer.keyClass(IntWritable.class), SequenceFile.Writer.valueClass(Text.class));
+            writer = SequenceFile.createWriter(new Configuration(),
+                    SequenceFile.Writer.file(new Path(path)),
+                    SequenceFile.Writer.compression(SequenceFile.CompressionType.RECORD),
+                    SequenceFile.Writer.keyClass(IntWritable.class),
+                    SequenceFile.Writer.valueClass(Text.class));
             for (int i = 1; i <= 1000; i++) {
                 intWritable.set(i);
                 text.set("lovecws" + String.valueOf(i));
@@ -384,7 +388,11 @@ public class HDFSBasicOperation {
         //configuration.set("fs.hdfs.impl", DistributedFileSystem.class.getName());
         MapFile.Writer writer = null;
         try {
-            writer = new MapFile.Writer(configuration, new Path(path), MapFile.Writer.keyClass(IntWritable.class), MapFile.Writer.valueClass(Text.class), MapFile.Writer.compression(SequenceFile.CompressionType.NONE, new DeflateCodec()));
+            writer = new MapFile.Writer(configuration,
+                    new Path(path),
+                    MapFile.Writer.keyClass(IntWritable.class),
+                    MapFile.Writer.valueClass(Text.class),
+                    MapFile.Writer.compression(SequenceFile.CompressionType.NONE, new DeflateCodec()));
             for (int i = 1; i <= 10000; i++) {
                 writer.append(new IntWritable(i), new Text("lovecws" + i));
             }
