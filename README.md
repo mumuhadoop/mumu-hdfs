@@ -16,7 +16,10 @@
 - 数据块存储，hdfs采用基于大数据块的文件存储，默认的块大小为64mb，较少源数据存储，分布存储在不同的服务器上。
 
 ## 相关阅读  
-[hadoop官网文档](http://hadoop.apache.org)  
+[mumu-hdfs文档](https://mumu-hdfs.readthedocs.io/en/latest/)  
+  
+[hadoop官网文档](http://hadoop.apache.org)
+
 [hadoop hdfs分布式文件系统](http://hadoop.apache.org/docs/r1.0.4/cn/hdfs_design.html)  
 ## 联系方式
 **以上观点纯属个人看法，如有不同，欢迎指正。  

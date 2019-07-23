@@ -3,6 +3,7 @@ os: linux
 env:
   global:
     - HADOOP_ADDRESS=hdfs://localhost:9000
+    - CODECOV_TOKEN=4f3f3b95-0998-4fdb-9c48-aa198c3bc618
 
 sudo: required
 
@@ -19,5 +20,5 @@ before_install:
 script: mvn clean install cobertura:cobertura
 
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash) -t 4f3f3b95-0998-4fdb-9c48-aa198c3bc618
   

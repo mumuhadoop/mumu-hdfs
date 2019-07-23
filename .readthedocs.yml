@@ -12,9 +12,10 @@ formats:
   - pdf
   - htmlzip
 
-python:
-  version: 2.7
-  install:
-    - requirements: docs/requirements.txt
-    - method: pip
-  system_packages: true
+#python:
+#  version: 2.7
+#  install:
+#    - requirements: docs/requirements.txt
+#    - method: pip
+#      path .
+#  system_packages: true
