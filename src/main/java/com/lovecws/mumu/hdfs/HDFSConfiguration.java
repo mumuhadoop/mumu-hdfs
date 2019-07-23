@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
 public class HDFSConfiguration {
 
     private static final Logger log = Logger.getLogger(HDFSConfiguration.class);
-    public static String HDFS_URI = "hdfs://192.168.11.25:9000";
+    public static String HDFS_URI = "hdfs://172.31.134.216:9000";
 
     /**
      * 获取到分布式文件

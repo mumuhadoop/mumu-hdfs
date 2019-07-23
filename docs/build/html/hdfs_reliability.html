@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-Cn" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-Cn" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hdfs可靠性设计 &mdash; mumu-hdfs 0.0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="prev" title="hdfs读写流程" href="hdfs_processing.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mumu-hdfs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hdfs_feature.html">hdfs基本特征</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hdfs_structure.html">hdfs组成结构</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hdfs_processing.html">hdfs读写流程</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hdfs可靠性设计</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">hdfs数据块多副本存储设计</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">hdfs可靠性的设计实现</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">1、安全模式</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secondarynamenode">2、secondaryNameNode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">3、心跳、副本重新创建</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">4、数据一致性</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">5、租约</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">5、回滚</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mumu-hdfs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>hdfs可靠性设计</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hdfs_reliability.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hdfs">
+<h1>hdfs可靠性设计<a class="headerlink" href="#hdfs" title="永久链接至标题">¶</a></h1>
+<p><strong>hdfs能够提到如此广泛的使用，跟hdfs是分不开的。作为一个能够在成千上万个服务器上运行的分布式文件系统，hdfs在可靠性设计上是考虑非常周全的</strong></p>
+<div class="section" id="id1">
+<h2>hdfs数据块多副本存储设计<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p>hdfs分布式文件系统采用多副本方式来存储数据块，且同同个数据块的多个副本会存储在不同的服务器中(如果有机架区分会存储在不同的机架上)。采用多副本有如下几个优势。</p>
+<ul class="simple">
+<li>1、采用多副本，可以让客户端从不同的数据块读取数据，加快传输速度。</li>
+<li>2、hdfs和datanode是通过网络传输，采用多副本可以判断传输是否报错。</li>
+<li>3、多副本保证一个datanode失效的情况下，数据还可用。</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>hdfs可靠性的设计实现<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+<div class="section" id="id3">
+<h3>1、安全模式<a class="headerlink" href="#id3" title="永久链接至标题">¶</a></h3>
+<p>hdfs刚启动的时候会进入到安全模式(safe mode)。处于安全模式的namenode不能做任何文件操作，甚至内部副本创建都是不允许的。namenode此时会和datanode进行通信
+，回去datanode数据块，并且对数据块进行检测。只有通过了namenode的检测，一个数据块才被认为是安全的。当认为安全的数据块超过一定阈值之后，namenode才退出
+安全模式。</p>
+</div>
+<div class="section" id="secondarynamenode">
+<h3>2、secondaryNameNode<a class="headerlink" href="#secondarynamenode" title="永久链接至标题">¶</a></h3>
+<p>hadoop使用secondaryNameNode来备份namenode的元数据，以便在namenode出现故障的时候可以从secondaryNameNode恢复元数据。secondaryNameNode充当namenode的一个
+副本，他本身不处理任何请求，因为这些请求都是通过namenode来访问。</p>
+<p>namenode中保存了整个文件系统的元数据，而secondaryNameNode的作用就是周期性的保存namenode的元数据。这些元数据包括文件镜像数据FsImage和编辑日志数据Editlog。
+FsImage相当于hdfs的检查点，namenode启动的时候会读取FsImage日志信息到内存中，并将与其Editlog日志数据进行合并生成新的FsImage。在namenode运行期间，关于hdfs的所
+有修改都会记录到Editlog日志文件中。如果namenode失效，可以从secondaryNameNode保存的FsImage和Editlog日志数据恢复出namenode的最新状态，尽量减少损失。</p>
+</div>
+<div class="section" id="id4">
+<h3>3、心跳、副本重新创建<a class="headerlink" href="#id4" title="永久链接至标题">¶</a></h3>
+<p>hdfs启动心跳机制保存hdfs在运行期间namenode和datanode之前连通性。namenode周期性的向datanode发送心跳请求，收到心跳请求的datanode会发送回复信息，如果侦探到datanode
+失去连接，那么保存在这个datanode的数据块就不可用，那么这些数据块就会重新创建新的副本。</p>
+</div>
+<div class="section" id="id5">
+<h3>4、数据一致性<a class="headerlink" href="#id5" title="永久链接至标题">¶</a></h3>
+<p>hdfs分布式文件系统使用校验和(checksum)来校验文件传输过程中文件是否出现损坏，如果出现损坏就从其他的副本来传递数据。</p>
+</div>
+<div class="section" id="id6">
+<h3>5、租约<a class="headerlink" href="#id6" title="永久链接至标题">¶</a></h3>
+<p>当多个进程同时写入一个文件的时候，为了保持数据一致性，使用到了租约（lease）来保证只有一个进程能够写数据。当进程写入文件的时候，首先从namenode获取一个租约(租约存在过期时间)，
+当文件名称存在租约的时候，其他进程就不能够写入文件。当租约过期的时候，客户端就要重新生成新的租约。如果客户端超时没有重新获取租约，namenode就会收回租约。</p>
+</div>
+<div class="section" id="id7">
+<h3>5、回滚<a class="headerlink" href="#id7" title="永久链接至标题">¶</a></h3>
+<p>当对hdfs进行版本升级的时候，如果新版本出现了问题，可以对版本进行回滚。因为hdfs在升级的时候会备份原来版本的信息。</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="hdfs_processing.html" class="btn btn-neutral float-left" title="hdfs读写流程" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, babymm
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

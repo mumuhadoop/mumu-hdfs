@@ -1,0 +1,233 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-Cn" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-Cn" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hdfs组成结构 &mdash; mumu-hdfs 0.0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="数据工作过程" href="hdfs_processing.html" />
+    <link rel="prev" title="hdfs基本特征" href="hdfs_feature.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mumu-hdfs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hdfs_feature.html">hdfs基本特征</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hdfs组成结构</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#nomenode">nomenode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datanone">datanone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#block">block数据块</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hdfs_processing.html">数据工作过程</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mumu-hdfs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>hdfs组成结构</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hdfs_structure.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hdfs">
+<h1>hdfs组成结构<a class="headerlink" href="#hdfs" title="永久链接至标题">¶</a></h1>
+<p><em>hdfs分布式文件系统由namenode节点和datanode节点组成，遵从主从结构。namenode是主服务器，用来管理文件系统的命名空间和源数据，以及处理外界访问文件的请求</em></p>
+<div class="section" id="nomenode">
+<h2>nomenode<a class="headerlink" href="#nomenode" title="永久链接至标题">¶</a></h2>
+<p><strong>nodenode 保存了文件系统的三种元数据</strong></p>
+<ul class="simple">
+<li>命名空间，即整个hdfs分布式文件系统的目录结构</li>
+<li>数据块和文件名的映射表</li>
+<li>每个数据块的副本信息，默认hdfs是三个副本。</li>
+</ul>
+</div>
+<div class="section" id="datanone">
+<h2>datanone<a class="headerlink" href="#datanone" title="永久链接至标题">¶</a></h2>
+<p><strong>datanode用来实际存储和管理文件的数据块。hdfs默认的文件块大小为64MB，同时为了防止数据丢失，每个数据块有3个副本，每个副本存储在不同的服务器上，防止一个节点的失效导致数据不可用</strong></p>
+</div>
+<div class="section" id="block">
+<h2>block数据块<a class="headerlink" href="#block" title="永久链接至标题">¶</a></h2>
+<p><strong>为了提高磁盘使用率，文件系统的最小读写单位不是字节，而是数据块。数据块的信息对用户来说是透明的。hdfs的数据块一般是大块，默认是64MB。数据块设置这么大的优势是:</strong></p>
+<ul class="simple">
+<li>减少磁盘寻址开销</li>
+<li>减少namenode存储开销和时间开销。</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hdfs_processing.html" class="btn btn-neutral float-right" title="数据工作过程" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hdfs_feature.html" class="btn btn-neutral float-left" title="hdfs基本特征" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, babymm
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

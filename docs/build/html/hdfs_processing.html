@@ -1,0 +1,229 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="zh-Cn" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="zh-Cn" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>hdfs读写流程 &mdash; mumu-hdfs 0.0.1 文档</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/translations.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="搜索" href="search.html" />
+    <link rel="next" title="hdfs可靠性设计" href="hdfs_reliability.html" />
+    <link rel="prev" title="hdfs组成结构" href="hdfs_structure.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> mumu-hdfs
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="hdfs_feature.html">hdfs基本特征</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hdfs_structure.html">hdfs组成结构</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">hdfs读写流程</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">数据访问流程</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">数据写入流程</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hdfs_reliability.html">hdfs可靠性设计</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">mumu-hdfs</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>hdfs读写流程</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/hdfs_processing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hdfs">
+<h1>hdfs读写流程<a class="headerlink" href="#hdfs" title="永久链接至标题">¶</a></h1>
+<p><em>hdfs支持一次写入到此读取模式，文件不能修改，只能附件。</em></p>
+<div class="section" id="id1">
+<h2>数据访问流程<a class="headerlink" href="#id1" title="永久链接至标题">¶</a></h2>
+<p><strong>namenode是所有元数据所有者，但是程序访问文件的时候，namenode只是简单的把数据块存储路径返回给客户端程序，客户端程序直接访问datanoe获取数据。这样设计有如下两个好处：</strong></p>
+<ul class="simple">
+<li>并发访问，程序可以同时在不同的datanode上访问同一个文件。</li>
+<li>减轻namenode的负载，避免namenode程序hdfs的瓶颈。</li>
+</ul>
+<p><strong>数据块访问流程如下:</strong></p>
+<ul class="simple">
+<li>客户端程序把hdfs路径发送到namenode</li>
+<li>namenode接收到文件名之后，检索数据块，在根据数据块信息找到datanode地址，并且将地址信息返回到客户端。</li>
+<li>客户端接收到地址信息之后，与这些datanode并行的进行数据传输操作，同时将操作结果日志(比如是否成功、数据块信息)提交到namenode。</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>数据写入流程<a class="headerlink" href="#id2" title="永久链接至标题">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hdfs_reliability.html" class="btn btn-neutral float-right" title="hdfs可靠性设计" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hdfs_structure.html" class="btn btn-neutral float-left" title="hdfs组成结构" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, babymm
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
