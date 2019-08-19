@@ -3,13 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to mumu-hdfs's documentation!
-=====================================
+欢迎来到 mumu-hdfs 文档!
+========================
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
+   :caption: 目录:
 
    hdfs_feature
    hdfs_structure
@@ -17,7 +16,7 @@ Welcome to mumu-hdfs's documentation!
    hdfs_reliability
 
 
-Indices and tables
+索引
 ==================
 
 * :ref:`genindex`

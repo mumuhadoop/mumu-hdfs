@@ -1,5 +1,6 @@
 version: 2
 
+
 sphinx:
   configuration: docs/source/conf.py
 
@@ -16,6 +17,7 @@ formats:
 #  version: 2.7
 #  install:
 #    - requirements: docs/requirements.txt
+
 #    - method: pip
 #      path .
 #  system_packages: true

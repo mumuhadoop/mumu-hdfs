@@ -21,3 +21,11 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+docs/.vscode/
+docs/source/_build/
+target/cobertura/
+target/generated-classes/cobertura/cobertura.properties
+target/generated-sources/
+target/generated-test-sources/
+target/maven-status/
+target/test-classes/log4j.properties

@@ -3,8 +3,13 @@ hdfs组成结构
 
 *hdfs分布式文件系统由namenode节点和datanode节点组成，遵从主从结构。namenode是主服务器，用来管理文件系统的命名空间和源数据，以及处理外界访问文件的请求*
 
+HDFS采用master/slave架构。一个HDFS集群是由一个Namenode和一定数目的Datanodes组成。Namenode是一个中心服务器，负责管理文件系统的名字空间(namespace)以及
+客户端对文件的访问。集群中的Datanode一般是一个节点一个，负责管理它所在节点上的存储。HDFS暴露了文件系统的名字空间，用户能够以文件的形式在上面存储数据。从
+内部看，一个文件其实被分成一个或多个数据块，这些块存储在一组Datanode上。Namenode执行文件系统的名字空间操作，比如打开、关闭、重命名文件或目录。它也负责确
+定数据块到具体Datanode节点的映射。Datanode负责处理文件系统客户端的读写请求。在Namenode的统一调度下进行数据块的创建、删除和复制。
+
 ========
-nomenode
+namenode
 ========
 
 **nodenode 保存了文件系统的三种元数据**
@@ -28,4 +33,3 @@ block数据块
 
 + 减少磁盘寻址开销
 + 减少namenode存储开销和时间开销。
-
